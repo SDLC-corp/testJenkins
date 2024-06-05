@@ -31,7 +31,6 @@ pipeline {
                 sh '''#!/bin/bash
                 touch .env
                 echo PORT=$TJ_API_DEV_PORT >> .env
-                sed -i 's/environment/qa/g' ecosystem.config.js
                 '''
             }
         }

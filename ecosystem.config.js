@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'tj-api-environment',
+      name: 'tj-api-prod',
       script: 'index.js',
       watch: false,
       autorestart: true,

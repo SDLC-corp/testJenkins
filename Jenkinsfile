@@ -11,7 +11,7 @@ pipeline {
         stage('install') {
             when {
                 anyOf{
-                    expression{env.BRANCH_NAME == 'deploy'}
+                    expression{env.BRANCH_NAME == 'dev'}
                 }
             }
             steps {
@@ -20,7 +20,7 @@ pipeline {
         }
         stage('create-env-dev') {
             when {
-                branch 'deploy'
+                branch 'dev'
             }
             environment {
                 TJ_API_DEV_PORT = credentials("TJ_API_DEV_PORT")
@@ -36,11 +36,9 @@ pipeline {
             }
         }
 
-        stage('deploy-dev') {
+        stage('dev-dev') {
             when {
-                branch 'deploy'
-            }
-            environment {
+                branch 'dev'
             }
             steps {
                 echo 'deploying the software'

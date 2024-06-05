@@ -12,6 +12,7 @@ pipeline {
             when {
                 anyOf{
                     expression{env.BRANCH_NAME == 'dev'}
+                    expression{env.BRANCH_NAME == 'prod'}
                 }
             }
             steps {
@@ -29,6 +30,7 @@ pipeline {
             steps {
                 echo 'Creating Enviorment varibles : '+env.BRANCH_NAME
                 sh '''#!/bin/bash
+                rm .env
                 touch .env
                 echo PORT=$TJ_API_DEV_PORT >> .env
                 '''
@@ -46,5 +48,38 @@ pipeline {
                 '''
             }
         }
+
+
+        stage('create-env-prod') {
+            when {
+                branch 'prod'
+            }
+            environment {
+                TJ_API_PROD_PORT = credentials("TJ_API_PROD_PORT")
+                BRANCH_NAME = '${env.BRANCH_NAME}'
+            }
+            steps {
+                echo 'Creating Enviorment varibles : '+env.BRANCH_NAME
+                sh '''#!/bin/bash
+                rm .env
+                touch .env
+                echo PORT=$TJ_API_PROD_PORT >> .env
+                '''
+            }
+        }
+
+        stage('dev-prod') {
+            when {
+                branch 'prod'
+            }
+            steps {
+                echo 'deploying the software'
+                sh '''#!/bin/bash
+                    pm2 stop ecosystem.config.js && pm2 start ecosystem.config.js && pm2 save
+                '''
+            }
+        }
+
+
     }
 }
